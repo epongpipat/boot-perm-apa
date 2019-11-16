@@ -9,5 +9,5 @@
 - name of statistic
 - degrees of freedom
 - mean squared error (MSE)
-- adjusted $R^2$ and CI
+- adjusted R^2 and CI
 - permuted p-values
