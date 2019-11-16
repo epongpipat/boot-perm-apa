@@ -1,34 +1,32 @@
 --- 
-title: "A Minimal Book Example"
-author: "Yihui Xie"
+title: "APA Statement using Resampling Techniques for GLM using R"
+author: "Ekarin E. Pongpipat, Phillip F. Agres, Paulina Skolasinska"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+description: "This book is a reference on how to perform resampling techniques (e.g., bootstrapping and permutation testing) to write a more informed APA statement."
+subtitle: "This book is a reference on how to perform resampling techniques (e.g., bootstrapping and permutation testing) to write a more informed APA statement."
 ---
 
-# Prerequisites
+# Introduction
 
-This is a _sample_ book written in **Markdown**. You can use anything that Pandoc's Markdown supports, e.g., a math equation $a^2 + b^2 = c^2$.
+Currently, the APA statement includes: 
 
-The **bookdown** package can be installed from CRAN or Github:
+- Estimate
+- Name of Statistic
+- Degrees of Freedom (df)
+- Statistical Value
+- *p*-value
 
-```{r eval=FALSE}
-install.packages("bookdown")
-# or the development version
-# devtools::install_github("rstudio/bookdown")
-```
+However, this is not always informative. The APA statement should include:
 
-Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading `#`.
-
-To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.name/tinytex/>.
-
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
-```
+- Estimate and its Confidence Interval (CI)
+- Name of Statistic
+- Degrees of Freedom (df)
+- Statistical Value
+- Mean Squared Error (MSE)
+- Adjusted R^2 and its CI
+- Permutated P-Value
