@@ -1,2 +1,1 @@
-# boot-perm-apa
-Book about using a more informative APA statement by including and covering R^2 confidence intervals (CI), bootstrap CI, and permuted p-values
+This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). Please see the page "Get Started" at https://bookdown.org/ for how to compile this example.
