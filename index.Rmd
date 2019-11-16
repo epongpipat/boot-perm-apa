@@ -1,6 +1,6 @@
 --- 
 title: "APA Statement using Resampling Techniques for GLM using R"
-author: "Ekarin E. Pongpipat, Phillip F. Agres, Paulina Skolasinska, Yuefeng Huang"
+author: "Ekarin E. Pongpipat, Phillip F. Agres, Paulina Skolasinska, Yuefeng Huang, Jane Lung"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
