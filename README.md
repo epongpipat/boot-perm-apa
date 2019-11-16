@@ -1,1 +1,13 @@
-This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). Please see the page "Get Started" at https://bookdown.org/ for how to compile this example.
+# APA Statement
+- estimate
+- name of statistic
+- degrees of freedom
+- p-value
+
+# Better Version
+- estimate with confidence interval (CI)
+- name of statistic
+- degrees of freedom
+- mean squared error (MSE)
+- adjusted $R^2$ and CI
+- permuted p-values
