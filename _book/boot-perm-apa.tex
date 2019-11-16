@@ -30,6 +30,46 @@
 \urlstyle{same}  % don't use monospace font for urls
 \usepackage{natbib}
 \bibliographystyle{apalike}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile}
 \makeatletter
@@ -137,6 +177,101 @@ However, this is not always informative. The APA statement should include:
 
 \hypertarget{bootstrap}{%
 \chapter{Bootstrap}\label{bootstrap}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\NormalTok{df <-}\StringTok{ }\NormalTok{carData}\OperatorTok{::}\NormalTok{Salaries}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{simple-linear-regression}{%
+\section{Simple Linear Regression}\label{simple-linear-regression}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# set number of bootstraps}
+\NormalTok{n_bootstrap <-}\StringTok{ }\DecValTok{1000}
+
+\CommentTok{# create empty dataframes for coefficients and r-squared}
+\NormalTok{bootstrap_coef <-}\StringTok{ }\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{n_iter =} \OtherTok{NA}\NormalTok{,}
+                         \DataTypeTok{.rows =}\NormalTok{ n_bootstrap)}
+\NormalTok{bootstrap_rsq <-}\StringTok{ }\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{n_iter =} \OtherTok{NA}\NormalTok{,}
+                         \DataTypeTok{.rows =}\NormalTok{ n_bootstrap)}
+
+\CommentTok{# for loop for bootstrap}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_bootstrap) \{}
+  
+  \CommentTok{# randomly sample with replacement from the rows}
+\NormalTok{  idx <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(df), }\KeywordTok{nrow}\NormalTok{(df), }\DataTypeTok{replace =}\NormalTok{ T)}
+\NormalTok{  df_boot <-}\StringTok{ }\NormalTok{df[idx,]}
+  
+  \CommentTok{# run linear model}
+\NormalTok{  model <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(salary }\OperatorTok{~}\StringTok{ }\NormalTok{yrs.since.phd }\OperatorTok{+}\StringTok{ }\NormalTok{yrs.service, df_boot)}
+  
+  \CommentTok{# extract estimates and r^2 value}
+\NormalTok{  summary_model <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(model)}
+\NormalTok{  t_stat <-}\StringTok{ }\NormalTok{summary_model}\OperatorTok{$}\NormalTok{coefficients[, }\StringTok{"t value"}\NormalTok{]}
+\NormalTok{  df_denom <-}\StringTok{ }\NormalTok{summary_model}\OperatorTok{$}\NormalTok{df[[}\DecValTok{2}\NormalTok{]]}
+\NormalTok{  r_sq <-}\StringTok{ }\NormalTok{t_stat}\OperatorTok{^}\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(t_stat}\OperatorTok{^}\DecValTok{2} \OperatorTok{+}\StringTok{ }\NormalTok{df_denom)}
+  
+  \CommentTok{# write bootstrap iteration}
+\NormalTok{  bootstrap_coef[i, }\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{i}
+\NormalTok{  bootstrap_rsq[i, }\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{i}
+  
+  \CommentTok{# determine number of coefficients}
+\NormalTok{  n_coef <-}\StringTok{ }\KeywordTok{length}\NormalTok{(model}\OperatorTok{$}\NormalTok{coefficients)}
+  
+  \CommentTok{# write estimate and r^2 to table for looping across variables}
+  \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_coef) \{}
+    
+    \CommentTok{# bootstrap estimate confidence interval}
+\NormalTok{    bootstrap_coef[i, }\KeywordTok{names}\NormalTok{(model}\OperatorTok{$}\NormalTok{coefficients[j])] <-}\StringTok{ }\NormalTok{model}\OperatorTok{$}\NormalTok{coefficients[[j]]}
+    
+    \CommentTok{# bootstrap R^2 CI}
+\NormalTok{    bootstrap_rsq[i, }\KeywordTok{names}\NormalTok{(model}\OperatorTok{$}\NormalTok{coefficients[j])] <-}\StringTok{ }\NormalTok{r_sq[j]}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\CommentTok{# print estimate CI and R^2 CI for each variable}
+\ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\NormalTok{n_coef}\OperatorTok{+}\DecValTok{1}\NormalTok{) \{}
+  
+  \CommentTok{# estimate CI}
+  \KeywordTok{cat}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\KeywordTok{colnames}\NormalTok{(bootstrap_coef[,k]), }\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+  \KeywordTok{cat}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{ estimate CI}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{  bootstrap_ci <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(bootstrap_coef[,k]), }\DataTypeTok{probs =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{.975}\NormalTok{))}
+  \KeywordTok{print}\NormalTok{(bootstrap_ci)}
+  
+  \CommentTok{# R^2 CI}
+  \KeywordTok{cat}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{ R^2 CI}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{  bootstrap_rsq_ci <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(bootstrap_rsq[,k]), }\DataTypeTok{probs =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{.975}\NormalTok{))}
+  \KeywordTok{print}\NormalTok{(bootstrap_rsq_ci)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  yrs.since.phd 
+## 
+##  estimate CI
+##      2.5%     97.5% 
+##  979.3215 2072.2106 
+## 
+##  R^2 CI
+##       2.5%      97.5% 
+## 0.03122567 0.15621742 
+## 
+##  yrs.service 
+## 
+##  estimate CI
+##         2.5%        97.5% 
+## -1162.692563     4.480129 
+## 
+##  R^2 CI
+##         2.5%        97.5% 
+## 0.0002034577 0.0535608331
+\end{verbatim}
 
 \hypertarget{permutation}{%
 \chapter{Permutation}\label{permutation}}

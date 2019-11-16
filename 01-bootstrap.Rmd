@@ -1,1 +1,69 @@
 # Bootstrap
+
+```{r}
+library(tidyverse)
+df <- carData::Salaries
+```
+
+## Simple Linear Regression
+```{r}
+# set number of bootstraps
+n_bootstrap <- 1000
+
+# create empty dataframes for coefficients and r-squared
+bootstrap_coef <- tibble(n_iter = NA,
+                         .rows = n_bootstrap)
+bootstrap_rsq <- tibble(n_iter = NA,
+                         .rows = n_bootstrap)
+
+# for loop for bootstrap
+for (i in 1:n_bootstrap) {
+  
+  # randomly sample with replacement from the rows
+  idx <- sample(1:nrow(df), nrow(df), replace = T)
+  df_boot <- df[idx,]
+  
+  # run linear model
+  model <- lm(salary ~ yrs.since.phd + yrs.service, df_boot)
+  
+  # extract estimates and r^2 value
+  summary_model <- summary(model)
+  t_stat <- summary_model$coefficients[, "t value"]
+  df_denom <- summary_model$df[[2]]
+  r_sq <- t_stat^2 / (t_stat^2 + df_denom)
+  
+  # write bootstrap iteration
+  bootstrap_coef[i, 1] <- i
+  bootstrap_rsq[i, 1] <- i
+  
+  # determine number of coefficients
+  n_coef <- length(model$coefficients)
+  
+  # write estimate and r^2 to table for looping across variables
+  for (j in 1:n_coef) {
+    
+    # bootstrap estimate confidence interval
+    bootstrap_coef[i, names(model$coefficients[j])] <- model$coefficients[[j]]
+    
+    # bootstrap R^2 CI
+    bootstrap_rsq[i, names(model$coefficients[j])] <- r_sq[j]
+  }
+}
+
+# print estimate CI and R^2 CI for each variable
+for (k in 2:n_coef+1) {
+  
+  # estimate CI
+  cat("\n", colnames(bootstrap_coef[,k]), "\n")
+  cat("\n estimate CI\n")
+  bootstrap_ci <- quantile(as.matrix(bootstrap_coef[,k]), probs = c(0.025, .975))
+  print(bootstrap_ci)
+  
+  # R^2 CI
+  cat("\n R^2 CI\n")
+  bootstrap_rsq_ci <- quantile(as.matrix(bootstrap_rsq[,k]), probs = c(0.025, .975))
+  print(bootstrap_rsq_ci)
+}
+
+```
+
