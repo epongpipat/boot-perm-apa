@@ -2,10 +2,21 @@
 
 ```{r}
 library(tidyverse)
+library(broom)
+library(eepR)
 df <- carData::Salaries
 ```
 
 ## Simple Linear Regression
+
+### Run Original Model
+```{r}
+model <- lm(salary ~ yrs.since.phd + yrs.service, df)
+tidy <- tidy(model)
+tidy
+```
+
+### Bootstrap
 ```{r}
 # set number of bootstraps
 n_bootstrap <- 1000
@@ -24,11 +35,14 @@ for (i in 1:n_bootstrap) {
   df_boot <- df[idx,]
   
   # run linear model
-  model <- lm(salary ~ yrs.since.phd + yrs.service, df_boot)
+  model_boot <- lm(salary ~ yrs.since.phd + yrs.service, df_boot)
+  
+  # obtain clean coefficients table
+  tidy_boot <- tidy(model_boot)
   
   # extract estimates and r^2 value
-  summary_model <- summary(model)
-  t_stat <- summary_model$coefficients[, "t value"]
+  summary_model <- summary(model_boot)
+  t_stat <- tidy_boot$statistic
   df_denom <- summary_model$df[[2]]
   r_sq <- t_stat^2 / (t_stat^2 + df_denom)
   
@@ -37,33 +51,58 @@ for (i in 1:n_bootstrap) {
   bootstrap_rsq[i, 1] <- i
   
   # determine number of coefficients
-  n_coef <- length(model$coefficients)
+  n_coef <- nrow(tidy_boot)
   
   # write estimate and r^2 to table for looping across variables
   for (j in 1:n_coef) {
     
     # bootstrap estimate confidence interval
-    bootstrap_coef[i, names(model$coefficients[j])] <- model$coefficients[[j]]
+    bootstrap_coef[i, tidy_boot$term[j]] <- tidy_boot$estimate[j]
     
     # bootstrap R^2 CI
-    bootstrap_rsq[i, names(model$coefficients[j])] <- r_sq[j]
+    bootstrap_rsq[i, tidy_boot$term[j]] <- r_sq[j]
   }
 }
 
 # print estimate CI and R^2 CI for each variable
-for (k in 2:n_coef+1) {
+for (k in 1:n_coef) {
   
-  # estimate CI
-  cat("\n", colnames(bootstrap_coef[,k]), "\n")
-  cat("\n estimate CI\n")
-  bootstrap_ci <- quantile(as.matrix(bootstrap_coef[,k]), probs = c(0.025, .975))
-  print(bootstrap_ci)
+  # obtain 95% estimate ci
+  bootstrap_ci <- quantile(as.matrix(bootstrap_coef[,(k+1)]), probs = c(0.025, .975))
   
-  # R^2 CI
-  cat("\n R^2 CI\n")
-  bootstrap_rsq_ci <- quantile(as.matrix(bootstrap_rsq[,k]), probs = c(0.025, .975))
-  print(bootstrap_rsq_ci)
+  # obtain 95% r^2 ci
+  bootstrap_rsq_ci <- quantile(as.matrix(bootstrap_rsq[,(k+1)]), probs = c(0.025, .975))
+  
+  # add to tidy table
+  tidy[k, "estimate_95_ci_ll"] <- bootstrap_ci[1]
+  tidy[k, "estimate_95_ci_ul"] <- bootstrap_ci[2]
+  tidy[k, "rsq_95_ci_ll"] <- bootstrap_rsq_ci[1]
+  tidy[k, "rsq_95_ci_ul"] <- bootstrap_rsq_ci[2]
 }
 
+tidy %>%
+  nice_table_html()
 ```
 
+### Bootstrap Estimate
+```{r}
+bootstrap_coef %>%
+  gather(., "term", "coef", -n_iter) %>%
+  ggplot(., aes(coef)) +
+  geom_histogram() +
+  facet_wrap(~ term, scales = "free_x") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45)) + labs(x = "estimate")
+```
+
+### Bootstrap $R^2$
+```{r}
+bootstrap_rsq %>%
+  gather(., "term", "coef", -n_iter) %>%
+  ggplot(., aes(coef)) +
+  geom_histogram() +
+  facet_wrap(~ term, scales = "free_x") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45)) + 
+  labs(x = "r-squared")
+```

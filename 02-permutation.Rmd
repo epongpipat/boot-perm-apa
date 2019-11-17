@@ -2,6 +2,7 @@
 
 ```{r}
 library(tidyverse)
+library(gridExtra)
 df <- carData::Salaries
 ```
 

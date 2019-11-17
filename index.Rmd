@@ -13,6 +13,10 @@ subtitle: "This book is a reference on how to perform resampling techniques (e.g
 
 # Introduction
 
+Note: This bookdown was creating during Brainhack-Dallas as a project to work with bookdown, review bootstrapping and permutation testing, and write out this APA statement.
+
+## APA Statement (Bare Minimum)
+
 Currently, the APA statement includes: 
 
 - Estimate
@@ -21,7 +25,9 @@ Currently, the APA statement includes:
 - Statistical Value
 - *p*-value
 
-However, this is not always informative. The APA statement should include:
+## More Informative APA Statement
+
+However, sometimes we want more information such as effect sizes or confidence intervals. Thus, we should also consider including the following: 
 
 - Estimate and its Confidence Interval (CI)
 - Name of Statistic
@@ -30,3 +36,7 @@ However, this is not always informative. The APA statement should include:
 - Mean Squared Error (MSE)
 - Adjusted R^2 and its CI
 - Permutated P-Value
+
+## Code Structure
+
+The code could definitely be more efficient. However, we have written the code this way because we believe that the code helps conceptually represent what is happening when you bootstrap or permute.
